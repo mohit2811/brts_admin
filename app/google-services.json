@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "493030671998",
+    "firebase_url": "https://brtc-5ddcd.firebaseio.com",
+    "project_id": "brtc-5ddcd",
+    "storage_bucket": "brtc-5ddcd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493030671998:android:cdf199a7d3cffa83",
+        "android_client_info": {
+          "package_name": "tech.inception.admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493030671998-gbpg9dlctg39h7826qsal8lngkvjcq87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvgN2hZdQ_SReO8mbDoYX2jqM0aUzovIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493030671998-gbpg9dlctg39h7826qsal8lngkvjcq87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
