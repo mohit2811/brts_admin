@@ -83,14 +83,15 @@ public class View_stops extends AppCompatActivity {
 
     public class view_holder extends RecyclerView.ViewHolder{
 
-        TextView s_name;
+        TextView s_name,floc,tloc;
         Button del;
         public view_holder(View itemView) {
             super(itemView);
 
 
             s_name= itemView.findViewById(R.id.stop_id);
-
+            floc= itemView.findViewById(R.id.from_id);
+            tloc= itemView.findViewById(R.id.to_id);
             del = itemView.findViewById(R.id.delete_stop);
         }
     }
@@ -112,6 +113,8 @@ public class View_stops extends AppCompatActivity {
 
             final createstop data=stop_list.get(position);
             holder.s_name.setText(data.S_name);
+            holder.floc.setText(from_details(data.routeidd));
+            holder.tloc.setText(to_details(data.routeidd));
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -125,5 +128,67 @@ public class View_stops extends AppCompatActivity {
         public int getItemCount() {
             return stop_list.size();
         }
+    }
+
+    private String from_details(final String routeidd) {
+        final String[] floc = new String[1];
+
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        System.out.println("rrrr");
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    createroute details = data.getValue(createroute.class);
+                    System.out.println("rrrrrr");
+                    if(details.r_id.equals(routeidd))
+                    {
+                         floc[0] =details.from_loc;
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return floc[0];
+    }
+    private String to_details(final String routeidd) {
+        final String[] tloc = new String[1];
+
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        System.out.println("rrrr");
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    createroute details = data.getValue(createroute.class);
+                    System.out.println("rrrrrr");
+                    if(details.r_id.equals(routeidd))
+                    {
+                        tloc[0] =details.to_loc;
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return tloc[0];
     }
 }

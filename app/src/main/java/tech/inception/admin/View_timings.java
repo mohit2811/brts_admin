@@ -109,7 +109,11 @@ TextView bid,from_id,to_id,stop_id,time_id;
 
 
             final createtime data = time_list.get(position);
-            holder.bid.setText(data.bus_id);
+
+            holder.from_id.setText(from_details(data.routeidd));
+            holder.to_id.setText(to_details(data.routeidd));
+            holder.stop_id.setText(stop_details(data.routeidd));
+            holder.bid.setText(bus_details(data.routeidd));
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -124,5 +128,129 @@ TextView bid,from_id,to_id,stop_id,time_id;
         public int getItemCount() {
             return time_list.size();
         }
+    }
+
+    private String bus_details(final String routeidd) {
+        final String[] bus_s = new String[1];
+
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        System.out.println("rrrr");
+        data.getReference().child("bus").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    createbuss details = data.getValue(createbuss.class);
+                    System.out.println("rrrrrr");
+                    if(details.routeidd.equals(routeidd))
+                    {
+                        bus_s[0] =details.b_name;
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return bus_s[0];
+    }
+
+    private String stop_details(final String routeidd) {
+        final String[] stop_s = new String[1];
+
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        System.out.println("rrrr");
+        data.getReference().child("stop").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    createstop details = data.getValue(createstop.class);
+                    System.out.println("rrrrrr");
+                    if(details.routeidd.equals(routeidd))
+                    {
+                        stop_s[0] =details.s_id;
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return stop_s[0];
+    }
+
+    private String from_details(final String routeidd) {
+        final String[] floc = new String[1];
+
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        System.out.println("rrrr");
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    createroute details = data.getValue(createroute.class);
+                    System.out.println("rrrrrr");
+                    if(details.r_id.equals(routeidd))
+                    {
+                        floc[0] =details.from_loc;
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return floc[0];
+    }
+    private String to_details(final String routeidd) {
+        final String[] tloc = new String[1];
+
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        System.out.println("rrrr");
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    createroute details = data.getValue(createroute.class);
+                    System.out.println("rrrrrr");
+                    if(details.r_id.equals(routeidd))
+                    {
+                        tloc[0] =details.to_loc;
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return tloc[0];
     }
 }
