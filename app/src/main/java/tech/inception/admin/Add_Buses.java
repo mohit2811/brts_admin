@@ -75,7 +75,7 @@ public class Add_Buses extends AppCompatActivity {
     public void get_routes()
     { final List<String> routes = new ArrayList<>();
         FirebaseDatabase data = FirebaseDatabase.getInstance();
-        data.getReference().child("routes").addListenerForSingleValueEvent(new ValueEventListener() {
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -95,7 +95,7 @@ public class Add_Buses extends AppCompatActivity {
         });
     }
 
-    public void submit_stop(View view) {
+    public void submit_bus(View view) {
 
         String name = bus_name.getText().toString();
         String number = bus_number.getText().toString();
@@ -113,7 +113,7 @@ public class Add_Buses extends AppCompatActivity {
         String idd= route_ids.get(route_spinner.getSelectedItemPosition());
         createbuss data = new createbuss(idd, number,name);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference().child("buss").child(idd).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+        database.getReference().child("bus").push().setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             public void onComplete(@NonNull Task<Void> task) {
 

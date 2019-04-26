@@ -87,7 +87,7 @@ public class Add_Routes extends AppCompatActivity {
         String idd=loc_from+loc_to;
         createroute data = new createroute(idd,loc_from,loc_to);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference().child("route").child(idd).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+        database.getReference().child("route").push().setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             public void onComplete(@NonNull Task<Void> task) {
 

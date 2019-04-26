@@ -101,5 +101,5 @@
         android:text="ADD BUS"
         android:background="#edcfc91f"
         android:layout_marginTop="20dp"
-        android:onClick="submit_stop"/>
+        android:onClick="submit_bus"/>
 </LinearLayout>

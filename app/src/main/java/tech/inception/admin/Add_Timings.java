@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import tech.inception.admin.sampledata.createbuss;
 import tech.inception.admin.sampledata.createroute;
 import tech.inception.admin.sampledata.createstop;
 import tech.inception.admin.sampledata.createtime;
@@ -47,7 +48,10 @@ public class Add_Timings extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add__timings);
-
+        route_ids = new ArrayList<>();
+        stop_ids = new ArrayList<>();
+        bus_ids = new ArrayList<>();
+        bus_timing = (EditText) findViewById(R.id.bus_timing);
         route_spinner = (Spinner) findViewById(R.id.route_spinner);
         stop_spinner = (Spinner) findViewById(R.id.stop_spinner);
         bus_spinner = (Spinner) findViewById(R.id.bus_spinner);
@@ -71,7 +75,7 @@ public class Add_Timings extends AppCompatActivity {
 
             }
         });
-
+        get_routes();
         route_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,17 +87,16 @@ public class Add_Timings extends AppCompatActivity {
 
             }
         });
+        stop_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                get_buses();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        route_ids = new ArrayList<>();
-        stop_ids = new ArrayList<>();
-        bus_ids = new ArrayList<>();
-
-        bus_timing = (EditText) findViewById(R.id.bus_timing);
-
-        get_routes();
-
-        get_buses();
-
+            }
+        });
     }
 
     public void submit_timing(View view)
@@ -112,7 +115,7 @@ public class Add_Timings extends AppCompatActivity {
 
         createtime data = new createtime(ridd,stop_id,bus_id,timing);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference().child("Timing").child(ridd).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+        database.getReference().child("Time").push().setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -142,14 +145,11 @@ public class Add_Timings extends AppCompatActivity {
                     createroute details = data.getValue(createroute.class);
                     routes.add(details.from_loc+" - to - "+details.to_loc);
                     route_ids.add(details.idd);
-
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,routes);
 
                 route_spinner.setAdapter(data1);
 
-
-                get_stops();
             }
 
             @Override
@@ -163,20 +163,20 @@ public class Add_Timings extends AppCompatActivity {
     public void get_stops()
     {
 
-        final List<String> routes = new ArrayList<>();
-        FirebaseDatabase data = FirebaseDatabase.getInstance();
-        data.getReference().child("routes").addListenerForSingleValueEvent(new ValueEventListener() {
+        final List<String> stops= new ArrayList<>();
+        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        data.getReference().child("stop").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    createroute details = data.getValue(createroute.class);
-                    routes.add(details.from_loc+" - to - "+details.to_loc);
-                    route_ids.add(details.idd);
+                    createstop details = data.getValue(createstop.class);
+                    stops.add(details.S_name);
+                    stop_ids.add(details.routeidd);
 
                 }
-                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,routes);
-
+                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,stops);
                 stop_spinner.setAdapter(data1);
+                get_buses();
             }
 
             @Override
@@ -188,19 +188,17 @@ public class Add_Timings extends AppCompatActivity {
 
     public void get_buses()
     {
-        final List<String> routes = new ArrayList<>();
+        final List<String> bus= new ArrayList<>();
         FirebaseDatabase data = FirebaseDatabase.getInstance();
-        data.getReference().child("routes").addListenerForSingleValueEvent(new ValueEventListener() {
+        data.getReference().child("bus").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    createroute details = data.getValue(createroute.class);
-                    routes.add(details.from_loc+" - to - "+details.to_loc);
-                    route_ids.add(details.idd);
-
+                    createbuss details = data.getValue(createbuss.class);
+                    bus.add(details.b_name);
+                    bus_ids.add(details.routeidd);
                 }
-                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,routes);
-
+                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,bus);
                 bus_spinner.setAdapter(data1);
             }
 

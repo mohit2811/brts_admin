@@ -56,6 +56,7 @@ public class View_routes extends AppCompatActivity {
                 {
                     createroute details = data.getValue(createroute.class);
                     System.out.println("rrrrrr");
+                    details.r_id=data.getKey();
                     route_list.add(details);
 
                     Adapter adapter = new Adapter();
@@ -115,7 +116,7 @@ public class View_routes extends AppCompatActivity {
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference().child("route").child(data.idd);
+                    DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference().child("route").child(data.r_id);
                     mPostReference.removeValue();
                 }
             });

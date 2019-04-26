@@ -1,7 +1,7 @@
 package tech.inception.admin.sampledata;
 
 public class createbuss{
-    public String  routeidd,b_num, b_name;
+    public String b_id,routeidd,b_num, b_name;
 
     createbuss()
     {

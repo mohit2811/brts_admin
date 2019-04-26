@@ -1,7 +1,7 @@
 package tech.inception.admin.sampledata;
 
 public class createroute{
-    public String  idd,from_loc, to_loc;
+    public String  idd,from_loc, to_loc,r_id;
 
     createroute()
     {

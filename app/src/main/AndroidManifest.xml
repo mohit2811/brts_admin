@@ -26,7 +26,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCoACGzF9Lu5-wyl7_gWyuYyedA4P7wUz0" />
+            android:value="AIzaSyCEPcGopu9UOIXHDvwPfpGTZ1Nj9ASCeqo" />
 
         <activity android:name=".Routes_options" />
         <activity android:name=".View_routes" />

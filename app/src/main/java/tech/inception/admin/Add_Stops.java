@@ -34,7 +34,7 @@ import tech.inception.admin.sampledata.createstop;
 public class Add_Stops extends AppCompatActivity {
 
     EditText stop_name ;
-    Spinner routes ;
+    Spinner routes_spinner ;
     List<String> routes_ids;
 
     @Override
@@ -45,7 +45,7 @@ public class Add_Stops extends AppCompatActivity {
          routes_ids = new ArrayList<>();
 
         stop_name = (EditText) findViewById(R.id.stop);
-        routes = (Spinner) findViewById(R.id.route_spinner);
+        routes_spinner = (Spinner) findViewById(R.id.route_spinner);
 
 
         get_routes();
@@ -59,10 +59,10 @@ public class Add_Stops extends AppCompatActivity {
             Toast.makeText(Add_Stops.this , "please enter stop name" ,Toast.LENGTH_SHORT).show();
             return;
         }
-        String idd=routes_ids.get(routes.getSelectedItemPosition());
+        String idd=routes_ids.get(routes_spinner.getSelectedItemPosition());
         createstop data = new createstop(idd,stop);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference().child("buss").child(idd).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+        database.getReference().child("stop").push().setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             public void onComplete(@NonNull Task<Void> task) {
 
@@ -85,7 +85,7 @@ public class Add_Stops extends AppCompatActivity {
     public void get_routes()
     { final List<String> routes = new ArrayList<>();
         FirebaseDatabase data = FirebaseDatabase.getInstance();
-        data.getReference().child("routes").addListenerForSingleValueEvent(new ValueEventListener() {
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -95,7 +95,7 @@ public class Add_Stops extends AppCompatActivity {
 
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Stops.this ,android.R.layout.simple_dropdown_item_1line,routes);
-                Add_Stops.this.routes.setAdapter(data1);
+                routes_spinner.setAdapter(data1);
             }
 
             @Override

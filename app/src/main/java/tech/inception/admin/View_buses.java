@@ -40,11 +40,9 @@ public class View_buses extends AppCompatActivity {
 
     public void get_busses()
     {
-        FirebaseAuth firebase = FirebaseAuth.getInstance();
-
         FirebaseDatabase data =FirebaseDatabase.getInstance();
         System.out.println("rrrr");
-        data.getReference().child("buss").addListenerForSingleValueEvent(new ValueEventListener() {
+        data.getReference().child("bus").addListenerForSingleValueEvent(new ValueEventListener() {
 
 
             @Override
@@ -56,6 +54,7 @@ public class View_buses extends AppCompatActivity {
                 {
                     createbuss details = data.getValue(createbuss.class);
                     System.out.println("rrrrrr");
+                    details.b_id=data.getKey();
                     bus_list.add(details);
 
                     Adapter adapter = new Adapter();
@@ -104,7 +103,7 @@ public class View_buses extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(view_holder holder, int position) {
+        public void onBindViewHolder(view_holder holder, final int position) {
 
 
             final createbuss data=bus_list.get(position);
@@ -113,7 +112,7 @@ public class View_buses extends AppCompatActivity {
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference().child("buss").child(data.routeidd);
+                    DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference().child("bus").child(data.b_id);
                     mPostReference.removeValue();
                 }
             });

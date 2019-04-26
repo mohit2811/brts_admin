@@ -57,6 +57,7 @@ public class View_stops extends AppCompatActivity {
                 {
                     createstop details = data.getValue(createstop.class);
                     System.out.println("rrrrrr");
+                    details.s_id=data.getKey();
                     stop_list.add(details);
 
                     Adapter adapter = new Adapter();
@@ -88,7 +89,7 @@ public class View_stops extends AppCompatActivity {
             super(itemView);
 
 
-            s_name= itemView.findViewById(R.id.stop_name);
+            s_name= itemView.findViewById(R.id.stop_id);
 
             del = itemView.findViewById(R.id.delete_stop);
         }
@@ -114,7 +115,7 @@ public class View_stops extends AppCompatActivity {
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference().child("stop").child(data.routeidd);
+                    DatabaseReference mPostReference = FirebaseDatabase.getInstance().getReference().child("stop").child(data.s_id);
                     mPostReference.removeValue();
                 }
             });
