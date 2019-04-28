@@ -81,7 +81,8 @@ public class Add_Buses extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createroute details = data.getValue(createroute.class);
                     routes.add(details.from_loc+" - to - "+details.to_loc);
-                    route_ids.add(details.idd);
+                    details.r_id=data.getKey();
+                    route_ids.add(details.r_id);
 
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Buses.this ,android.R.layout.simple_dropdown_item_1line,routes);

@@ -27,6 +27,7 @@ import tech.inception.admin.sampledata.createstop;
 
 public class View_stops extends AppCompatActivity {
     ArrayList<createstop> stop_list;
+    String from_,to_;
     RecyclerView stop_recycler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +114,9 @@ public class View_stops extends AppCompatActivity {
 
             final createstop data=stop_list.get(position);
             holder.s_name.setText(data.S_name);
-            holder.floc.setText(from_details(data.routeidd));
-            holder.tloc.setText(to_details(data.routeidd));
+            get_routes(data.routeidd);
+            holder.floc.setText(from_);
+            holder.tloc.setText(to_);
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -129,28 +131,14 @@ public class View_stops extends AppCompatActivity {
             return stop_list.size();
         }
     }
-
-    private String from_details(final String routeidd) {
-        final String[] floc = new String[1];
-
-        FirebaseDatabase data =FirebaseDatabase.getInstance();
-        System.out.println("rrrr");
-        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
-
-
+    private void get_routes(String routeidd) {
+        FirebaseDatabase data = FirebaseDatabase.getInstance();
+        data.getReference().child("route").child(routeidd).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot data : dataSnapshot.getChildren())
-                {
-                    createroute details = data.getValue(createroute.class);
-                    System.out.println("rrrrrr");
-                    if(details.r_id.equals(routeidd))
-                    {
-                         floc[0] =details.from_loc;
-                    }
-
-                }
+                createroute details=dataSnapshot.getValue(createroute.class);
+                from_=details.from_loc;
+                to_=details.to_loc;
             }
 
             @Override
@@ -158,37 +146,5 @@ public class View_stops extends AppCompatActivity {
 
             }
         });
-        return floc[0];
-    }
-    private String to_details(final String routeidd) {
-        final String[] tloc = new String[1];
-
-        FirebaseDatabase data =FirebaseDatabase.getInstance();
-        System.out.println("rrrr");
-        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
-
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot data : dataSnapshot.getChildren())
-                {
-                    createroute details = data.getValue(createroute.class);
-                    System.out.println("rrrrrr");
-                    if(details.r_id.equals(routeidd))
-                    {
-                        tloc[0] =details.to_loc;
-
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        return tloc[0];
     }
 }

@@ -144,7 +144,8 @@ public class Add_Timings extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createroute details = data.getValue(createroute.class);
                     routes.add(details.from_loc+" - to - "+details.to_loc);
-                    route_ids.add(details.idd);
+                    details.r_id=data.getKey();
+                    route_ids.add(details.r_id);
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,routes);
 
@@ -171,7 +172,8 @@ public class Add_Timings extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createstop details = data.getValue(createstop.class);
                     stops.add(details.S_name);
-                    stop_ids.add(details.routeidd);
+                    details.s_id=data.getKey();
+                    stop_ids.add(details.s_id);
 
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,stops);
@@ -196,7 +198,8 @@ public class Add_Timings extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createbuss details = data.getValue(createbuss.class);
                     bus.add(details.b_name);
-                    bus_ids.add(details.routeidd);
+                    details.b_id=data.getKey();
+                    bus_ids.add(details.b_id);
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,bus);
                 bus_spinner.setAdapter(data1);

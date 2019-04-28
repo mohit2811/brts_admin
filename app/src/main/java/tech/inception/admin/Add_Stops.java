@@ -91,7 +91,8 @@ public class Add_Stops extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createroute details = data.getValue(createroute.class);
                     routes.add(details.from_loc+" - to - "+details.to_loc);
-                    routes_ids.add(details.idd);
+                    details.r_id=data.getKey();
+                    routes_ids.add(details.r_id);
 
                 }
                 ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Stops.this ,android.R.layout.simple_dropdown_item_1line,routes);

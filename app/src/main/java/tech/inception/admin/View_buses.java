@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,10 +23,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import tech.inception.admin.sampledata.createbuss;
+import tech.inception.admin.sampledata.createroute;
 
 public class View_buses extends AppCompatActivity {
     ArrayList<createbuss> bus_list;
     RecyclerView bus_recycler;
+    String from_,to_;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,13 +83,15 @@ public class View_buses extends AppCompatActivity {
 
     public class view_holder extends RecyclerView.ViewHolder{
 
-        TextView bus_name,bus_num ;
+        TextView bus_name,bus_num,from,to ;
         Button del;
         public view_holder(View itemView) {
             super(itemView);
 
             bus_name = itemView.findViewById(R.id.bus_name);
             bus_num = itemView.findViewById(R.id.bus_number);
+            from = itemView.findViewById(R.id.from_id);
+            to = itemView.findViewById(R.id.to_id);
             del = itemView.findViewById(R.id.delete_bus);
         }
     }
@@ -109,6 +114,9 @@ public class View_buses extends AppCompatActivity {
             final createbuss data=bus_list.get(position);
             holder.bus_name.setText(data.b_name);
             holder.bus_num.setText(data.b_num);
+            get_routes(data.routeidd);
+            holder.from.setText(from_);
+            holder.to.setText(to_);
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -122,5 +130,22 @@ public class View_buses extends AppCompatActivity {
         public int getItemCount() {
             return bus_list.size();
         }
+    }
+
+    private void get_routes(String routeidd) {
+        FirebaseDatabase data = FirebaseDatabase.getInstance();
+        data.getReference().child("route").child(routeidd).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+             createroute details=dataSnapshot.getValue(createroute.class);
+             from_=details.from_loc;
+             to_=details.to_loc;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }
