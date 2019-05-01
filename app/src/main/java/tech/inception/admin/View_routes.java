@@ -1,6 +1,6 @@
 package tech.inception.admin;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,18 +19,21 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import tech.inception.admin.sampledata.createbuss;
 import tech.inception.admin.sampledata.createroute;
 
 public class View_routes extends AppCompatActivity {
     ArrayList<createroute> route_list;
     RecyclerView route_recycler;
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_routes);
         route_list = new ArrayList<>();
-
+        pd=new ProgressDialog(this);
+        pd.setTitle("Wait!!!");
+        pd.setMessage("Loading!!!!!!");
+        pd.show();
         route_recycler = findViewById(R.id.route_recycle);
 
         route_recycler.setLayoutManager(new LinearLayoutManager(View_routes.this , LinearLayoutManager.VERTICAL, false));
@@ -50,7 +51,7 @@ public class View_routes extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 route_list.clear();
-
+pd.hide();
 
                 for (DataSnapshot data : dataSnapshot.getChildren())
                 {

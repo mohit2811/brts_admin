@@ -12,20 +12,13 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,14 +31,14 @@ import tech.inception.admin.sampledata.createtime;
 
 public class Add_Timings extends AppCompatActivity {
 
-    Spinner route_spinner , stop_spinner , bus_spinner;
+    Spinner route_spinner, stop_spinner, bus_spinner;
 
-    List<String> route_ids , stop_ids , bus_ids;
-    EditText bus_timing  ;
+    List<String> route_ids, stop_ids, bus_ids;
+    EditText bus_timing;
+    private View view;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add__timings);
         route_ids = new ArrayList<>();
@@ -56,7 +49,7 @@ public class Add_Timings extends AppCompatActivity {
         stop_spinner = (Spinner) findViewById(R.id.stop_spinner);
         bus_spinner = (Spinner) findViewById(R.id.bus_spinner);
         bus_timing = (EditText) findViewById(R.id.bus_timing);
-
+        get_routes();
         bus_timing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +60,7 @@ public class Add_Timings extends AppCompatActivity {
                 mTimePicker = new TimePickerDialog(Add_Timings.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        bus_timing.setText( selectedHour + ":" + selectedMinute);
+                        bus_timing.setText(selectedHour + ":" + selectedMinute);
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
@@ -75,11 +68,13 @@ public class Add_Timings extends AppCompatActivity {
 
             }
         });
-        get_routes();
+
         route_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                get_stops();
+                get_stops(route_ids.get(route_spinner.getSelectedItemPosition()));
+                get_buses(route_ids.get(route_spinner.getSelectedItemPosition()));
+
             }
 
             @Override
@@ -87,47 +82,34 @@ public class Add_Timings extends AppCompatActivity {
 
             }
         });
-        stop_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                get_buses();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
     }
 
-    public void submit_timing(View view)
-    {
+    public void submit_timing(View view) {
 
 
-        if(bus_timing.getText().toString().equals(""))
-        {
-            Toast.makeText(Add_Timings.this , "please add timings ", Toast.LENGTH_SHORT).show();
+        if (bus_timing.getText().toString().equals("")) {
+            Toast.makeText(Add_Timings.this, "please add timings ", Toast.LENGTH_SHORT).show();
             return;
         }
-        String ridd =route_ids.get(route_spinner.getSelectedItemPosition());
-        String stop_id= stop_ids.get(stop_spinner.getSelectedItemPosition());
-        String bus_id=bus_ids.get(bus_spinner.getSelectedItemPosition());
-        String timing=bus_timing.getText().toString();
+        String ridd = route_ids.get(route_spinner.getSelectedItemPosition());
+        String stop_id = stop_ids.get(stop_spinner.getSelectedItemPosition());
+        String bus_id = bus_ids.get(bus_spinner.getSelectedItemPosition());
+        String timing = bus_timing.getText().toString();
 
-        createtime data = new createtime(ridd,stop_id,bus_id,timing);
+        createtime data = new createtime(ridd, bus_id,stop_id, timing);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         database.getReference().child("Time").push().setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
 
             public void onComplete(@NonNull Task<Void> task) {
 
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
 
-                    Toast.makeText(Add_Timings.this , "Time Added" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Add_Timings.this, "Time Added", Toast.LENGTH_SHORT).show();
 
-                }
-                else {
+                } else {
 
-                    Toast.makeText(Add_Timings.this , "Error" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Add_Timings.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -135,20 +117,22 @@ public class Add_Timings extends AppCompatActivity {
 
     }
 
-    public void get_routes()
-    { final List<String> routes = new ArrayList<>();
+    public void get_routes() {
+        final List<String> routes = new ArrayList<>();
         FirebaseDatabase data = FirebaseDatabase.getInstance();
-        data.getReference().child("routes").addListenerForSingleValueEvent(new ValueEventListener() {
+        data.getReference().child("route").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createroute details = data.getValue(createroute.class);
-                    routes.add(details.from_loc+" - to - "+details.to_loc);
-                    details.r_id=data.getKey();
+                    routes.add(details.from_loc + " - to - " + details.to_loc);
+                    details.r_id = data.getKey();
+
                     route_ids.add(details.r_id);
                 }
-                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,routes);
-
+                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this, android.R.layout.simple_dropdown_item_1line, routes);
+                System.out.println("cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc");
                 route_spinner.setAdapter(data1);
 
             }
@@ -161,24 +145,25 @@ public class Add_Timings extends AppCompatActivity {
     }
 
 
-    public void get_stops()
-    {
+    public void get_stops(final String s) {
 
-        final List<String> stops= new ArrayList<>();
-        FirebaseDatabase data =FirebaseDatabase.getInstance();
+        final List<String> stops = new ArrayList<>();
+        FirebaseDatabase data = FirebaseDatabase.getInstance();
         data.getReference().child("stop").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createstop details = data.getValue(createstop.class);
-                    stops.add(details.S_name);
-                    details.s_id=data.getKey();
-                    stop_ids.add(details.s_id);
 
+                    details.s_id = data.getKey();
+                    if (details.routeidd.equals(s)) {
+                        stops.add(details.S_name);
+                        stop_ids.add(details.s_id);
+
+                    }
                 }
-                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,stops);
+                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this, android.R.layout.simple_dropdown_item_1line, stops);
                 stop_spinner.setAdapter(data1);
-                get_buses();
             }
 
             @Override
@@ -188,20 +173,23 @@ public class Add_Timings extends AppCompatActivity {
         });
     }
 
-    public void get_buses()
-    {
-        final List<String> bus= new ArrayList<>();
+    public void get_buses(final String s) {
+        final List<String> bus = new ArrayList<>();
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         data.getReference().child("bus").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     createbuss details = data.getValue(createbuss.class);
-                    bus.add(details.b_name);
-                    details.b_id=data.getKey();
-                    bus_ids.add(details.b_id);
+
+                    details.b_id = data.getKey();
+                    if (details.routeidd.equals(s)) {
+                        bus.add(details.b_name);
+                        bus_ids.add(details.b_id);
+                    }
+
                 }
-                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this ,android.R.layout.simple_dropdown_item_1line,bus);
+                ArrayAdapter<String> data1 = new ArrayAdapter<String>(Add_Timings.this, android.R.layout.simple_dropdown_item_1line, bus);
                 bus_spinner.setAdapter(data1);
             }
 
@@ -211,4 +199,5 @@ public class Add_Timings extends AppCompatActivity {
             }
         });
     }
+
 }

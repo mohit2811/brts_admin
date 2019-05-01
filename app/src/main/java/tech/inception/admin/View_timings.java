@@ -1,6 +1,6 @@
 package tech.inception.admin;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,10 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,13 +29,16 @@ public class View_timings extends AppCompatActivity {
     ArrayList<createtime> time_list;
     RecyclerView time_recycler;
     String from_, to_, bus_num, stop_;
-
+ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_timings);
         time_list = new ArrayList<>();
-
+pd=new ProgressDialog(this);
+pd.setTitle("Wait!!!");
+pd.setMessage("Loading!!!!!!");
+pd.show();
         time_recycler = findViewById(R.id.time_recycle);
 
         time_recycler.setLayoutManager(new LinearLayoutManager(View_timings.this, LinearLayoutManager.VERTICAL, false));
@@ -47,17 +49,17 @@ public class View_timings extends AppCompatActivity {
 
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         System.out.println("rrrr");
-        data.getReference().child("time").addListenerForSingleValueEvent(new ValueEventListener() {
+        data.getReference().child("Time").addListenerForSingleValueEvent(new ValueEventListener() {
 
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 time_list.clear();
-
-
+                pd.hide();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
+
                     createtime details = data.getValue(createtime.class);
-                    System.out.println("rrrrrr");
+                    System.out.println("rrrcccccccccccccccccccccccccccccccccccccccccccrrr");
                     details.t_id = data.getKey();
                     time_list.add(details);
                     Adapter adapter = new Adapter();
@@ -102,7 +104,7 @@ public class View_timings extends AppCompatActivity {
         @Override
         public view_holder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            view_holder v = new view_holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.stop_cell, parent, false));
+            view_holder v = new view_holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.timing_cell, parent, false));
 
             return v;
         }
@@ -112,13 +114,10 @@ public class View_timings extends AppCompatActivity {
 
 
             final createtime data = time_list.get(position);
-            get_route(data.routeidd);
-            get_bus(data.bus_id);
-            get_stop(data.stop_id);
-            holder.bid.setText(bus_num);
-            holder.from_id.setText(from_);
-            holder.stop_id.setText(stop_);
-            holder.to_id.setText(to_);
+            get_routes(data.routeidd,holder.from_id,holder.to_id);
+            get_bus(data.bus_id,holder.bid);
+            get_stop(data.stop_id,holder.stop_id);
+
             holder.time_id.setText(data.time);
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,13 +135,14 @@ public class View_timings extends AppCompatActivity {
         }
     }
 
-    private void get_bus(String bus_id) {
+    private void get_bus(String bus_id, final TextView bid) {
+        System.out.println(bus_id+"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         data.getReference().child("bus").child(bus_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 createbuss details = dataSnapshot.getValue(createbuss.class);
-                bus_num = details.b_num;
+                bid.setText(details.b_num);
             }
 
             @Override
@@ -152,13 +152,13 @@ public class View_timings extends AppCompatActivity {
         });
     }
 
-    private void get_stop(String stop_id) {
+    private void get_stop(final String stop_id, final TextView stopId) {
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         data.getReference().child("stop").child(stop_id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 createstop details = dataSnapshot.getValue(createstop.class);
-                stop_ = details.s_id;
+                stopId.setText(details.S_name);
             }
 
             @Override
@@ -168,14 +168,16 @@ public class View_timings extends AppCompatActivity {
         });
     }
 
-    private void get_route(String routeidd) {
+    private void get_routes(String routeidd, final TextView floc, final TextView tloc) {
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         data.getReference().child("route").child(routeidd).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                createroute details = dataSnapshot.getValue(createroute.class);
-                from_ = details.from_loc;
-                to_ = details.to_loc;
+                createroute details=dataSnapshot.getValue(createroute.class);
+                floc.setText(details.from_loc);
+                tloc.setText(details.to_loc);
+
+                System.out.println(from_+to_+"mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
             }
 
             @Override
@@ -184,6 +186,5 @@ public class View_timings extends AppCompatActivity {
             }
         });
     }
-
 
 }

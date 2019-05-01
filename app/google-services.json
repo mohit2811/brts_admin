@@ -8,6 +8,64 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:493030671998:android:20652b58c37c177c",
+        "android_client_info": {
+          "package_name": "com.example.laptophp.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493030671998-gbpg9dlctg39h7826qsal8lngkvjcq87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvgN2hZdQ_SReO8mbDoYX2jqM0aUzovIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493030671998-gbpg9dlctg39h7826qsal8lngkvjcq87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493030671998:android:1c3a0c867e789878",
+        "android_client_info": {
+          "package_name": "com.inception.brtc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493030671998-gbpg9dlctg39h7826qsal8lngkvjcq87.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvgN2hZdQ_SReO8mbDoYX2jqM0aUzovIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493030671998-gbpg9dlctg39h7826qsal8lngkvjcq87.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:493030671998:android:cdf199a7d3cffa83",
         "android_client_info": {
           "package_name": "tech.inception.admin"

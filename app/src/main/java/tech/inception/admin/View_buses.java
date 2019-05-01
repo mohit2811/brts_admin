@@ -1,6 +1,6 @@
 package tech.inception.admin;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,12 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,13 +25,17 @@ import tech.inception.admin.sampledata.createroute;
 public class View_buses extends AppCompatActivity {
     ArrayList<createbuss> bus_list;
     RecyclerView bus_recycler;
-    String from_,to_;
+
+    ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_buses);
         bus_list = new ArrayList<>();
-
+        pd=new ProgressDialog(this);
+        pd.setTitle("Wait!!!");
+        pd.setMessage("Loading!!!!!!");
+        pd.show();
         bus_recycler = findViewById(R.id.bus_recycle);
 
         bus_recycler.setLayoutManager(new LinearLayoutManager(View_buses.this , LinearLayoutManager.VERTICAL, false));
@@ -52,9 +53,10 @@ public class View_buses extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 bus_list.clear();
 
-
+pd.hide();
                 for (DataSnapshot data : dataSnapshot.getChildren())
                 {
+
                     createbuss details = data.getValue(createbuss.class);
                     System.out.println("rrrrrr");
                     details.b_id=data.getKey();
@@ -90,7 +92,7 @@ public class View_buses extends AppCompatActivity {
 
             bus_name = itemView.findViewById(R.id.bus_name);
             bus_num = itemView.findViewById(R.id.bus_number);
-            from = itemView.findViewById(R.id.from_id);
+            from = itemView.findViewById(R.id.from_id_bus);
             to = itemView.findViewById(R.id.to_id);
             del = itemView.findViewById(R.id.delete_bus);
         }
@@ -114,9 +116,7 @@ public class View_buses extends AppCompatActivity {
             final createbuss data=bus_list.get(position);
             holder.bus_name.setText(data.b_name);
             holder.bus_num.setText(data.b_num);
-            get_routes(data.routeidd);
-            holder.from.setText(from_);
-            holder.to.setText(to_);
+            get_routes(data.routeidd,holder.from,holder.to);
             holder.del.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -132,14 +132,17 @@ public class View_buses extends AppCompatActivity {
         }
     }
 
-    private void get_routes(String routeidd) {
+    private void get_routes(String routeidd, final TextView floc, final TextView tloc) {
         FirebaseDatabase data = FirebaseDatabase.getInstance();
+        System.out.println(routeidd+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
         data.getReference().child("route").child(routeidd).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-             createroute details=dataSnapshot.getValue(createroute.class);
-             from_=details.from_loc;
-             to_=details.to_loc;
+                System.out.println(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
+                createroute details=dataSnapshot.getValue(createroute.class);
+                floc.setText(details.from_loc);
+                tloc.setText(details.to_loc);
+                System.out.println(details.from_loc+"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
             }
 
             @Override

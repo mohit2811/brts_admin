@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".Sign_in">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,7 +36,7 @@
         <activity android:name=".Bus_Options" />
         <activity android:name=".Timing_options" />
         <activity android:name=".View_timings" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".Sign_in"></activity>
     </application>
 
 </manifest>

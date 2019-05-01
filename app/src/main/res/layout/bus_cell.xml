@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textColor="#edcfc91f"
-            android:id="@+id/from_id"
+            android:id="@+id/from_id_bus"
             />
 
     </LinearLayout>
